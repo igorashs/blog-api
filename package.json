@@ -1,0 +1,45 @@
+{
+  "name": "blog-api",
+  "version": "1.0.0",
+  "description": "Blog-API",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "start-debug": "DEBUG=blog-api:* npm start",
+    "devstart": "nodemon app.js",
+    "serverstart": "DEBUG=blog-api:* npm run devstart"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/igorashs/blog-api.git"
+  },
+  "keywords": [
+    "express",
+    "blog-api"
+  ],
+  "author": "Igorashs",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/igorashs/blog-api/issues"
+  },
+  "homepage": "https://github.com/igorashs/blog-api#readme",
+  "dependencies": {
+    "@hapi/joi": "^17.1.1",
+    "cors": "^2.8.5",
+    "debug": "^4.1.1",
+    "express": "^4.17.1",
+    "http-errors": "^1.7.3",
+    "mongoose": "^5.9.14",
+    "morgan": "^1.10.0"
+  },
+  "devDependencies": {
+    "dotenv": "^8.2.0",
+    "eslint": "^7.0.0",
+    "eslint-config-standard": "^14.1.1",
+    "eslint-plugin-import": "^2.20.2",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1",
+    "nodemon": "^2.0.4"
+  }
+}
