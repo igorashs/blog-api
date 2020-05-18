@@ -2,6 +2,7 @@ const debug = require('debug')('blog-api:server');
 const mongoose = require('mongoose');
 const morgan = require('morgan');
 const createError = require('http-errors');
+const helmet = require('helmet');
 const env = require('./.env.config');
 const express = require('express');
 
@@ -23,6 +24,13 @@ const app = express();
 })();
 
 const db = mongoose.connection;
+
+// wearing the helmet
+app.use(
+  helmet({
+    hidePoweredBy: { setTo: 'Hidden Wizard' }
+  })
+);
 
 // init
 app.get('/', (req, res) => {
