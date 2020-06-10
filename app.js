@@ -32,10 +32,15 @@ app.use(
   })
 );
 
-// init
-app.get('/', (req, res) => {
-  res.json({ message: 'Hello There' });
-});
+// get our routes
+const indexRouter = require('./routes/index');
+const postRouter = require('./routes/post');
+const commentRouter = require('./routes/comment');
+
+// set our routes
+app.use('/', indexRouter);
+app.use('/posts', postRouter);
+app.use('/posts/:postID/comments', commentRouter);
 
 // handle errors after initial connection
 db.on('error', (err) => {
