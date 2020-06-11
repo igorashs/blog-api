@@ -1,29 +1,15 @@
 const debug = require('debug')('blog-api:server');
-const mongoose = require('mongoose');
 const morgan = require('morgan');
 const createError = require('http-errors');
 const helmet = require('helmet');
 const env = require('./.env.config');
 const express = require('express');
+const initDB = require('./lib/db').initDB;
 
 const app = express();
 
-// handle initial connection errors
-(async () => {
-  try {
-    await mongoose.connect(env.mongoDB, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-      useFindAndModify: false
-    });
-
-    debug(mongoose.connection.readyState === 1 && 'db connected');
-  } catch (connectionErr) {
-    debug(connectionErr);
-  }
-})();
-
-const db = mongoose.connection;
+// init DB
+initDB();
 
 // wearing the helmet
 app.use(
@@ -34,18 +20,15 @@ app.use(
 
 // get our routes
 const indexRouter = require('./routes/index');
+const userRouter = require('./routes/user');
 const postRouter = require('./routes/post');
 const commentRouter = require('./routes/comment');
 
 // set our routes
 app.use('/', indexRouter);
+app.use('/user', userRouter);
 app.use('/posts', postRouter);
 app.use('/posts/:postID/comments', commentRouter);
-
-// handle errors after initial connection
-db.on('error', (err) => {
-  debug(err);
-});
 
 // log our request in a fancy way
 app.use(morgan('dev'));
