@@ -11,7 +11,7 @@ const postSchema = new Schema({
 });
 
 postSchema.virtual('timestamp').get(function () {
-  return moment().calendar(this.date);
+  return moment(this.date).calendar();
 });
 
 module.exports = mongoose.model('Post', postSchema);
