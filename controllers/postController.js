@@ -11,7 +11,10 @@ exports.getAllPosts = (req, res) => {
 // GET a list of published posts
 exports.getPublishedPosts = async (req, res, next) => {
   try {
-    const publishedPosts = await Post.find({ isPublished: true });
+    const publishedPosts = await Post.find(
+      { isPublished: true },
+      'title date text -_id'
+    );
 
     res.json(publishedPosts);
   } catch (err) {
