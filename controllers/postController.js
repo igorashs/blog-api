@@ -1,11 +1,23 @@
+const debug = require('debug')('blog-api:postController');
+const createError = require('http-errors');
+const Post = require('../models/post');
+const joi = require('@hapi/joi');
+
 // GET a list of all posts (AUTH)
 exports.getAllPosts = (req, res) => {
   res.json({ message: 'GET /posts NOT IMPLEMENTED' });
 };
 
 // GET a list of published posts
-exports.getPublishedPosts = (req, res) => {
-  res.json({ message: 'GET /posts/published NOT IMPLEMENTED' });
+exports.getPublishedPosts = async (req, res, next) => {
+  try {
+    const publishedPosts = await Post.find({ isPublished: true });
+
+    res.json(publishedPosts);
+  } catch (err) {
+    debug(err);
+    next(createError(401));
+  }
 };
 
 // PUT a new post in DB (AUTH)
