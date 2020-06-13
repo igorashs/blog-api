@@ -15,15 +15,15 @@ const userSchema = Joi.object({
 });
 
 exports.postUserLogin = async (req, res, next) => {
-  const { error, value } = await userSchema.validate(req.body, {
-    abortEarly: false
-  });
+  try {
+    const { error, value } = await userSchema.validate(req.body, {
+      abortEarly: false
+    });
 
-  if (error) {
-    debug(error);
-    res.json({ validationError: 'Invalid username or password' });
-  } else {
-    try {
+    if (error) {
+      debug(error);
+      res.json({ validationError: 'Invalid username or password' });
+    } else {
       // fetch our user from db
       const user = await User.findOne({ username: value.username });
 
@@ -49,10 +49,10 @@ exports.postUserLogin = async (req, res, next) => {
       } else {
         res.json({ validationError: 'Invalid username' });
       }
-    } catch (err) {
-      debug(err);
-      next(createError(401));
     }
+  } catch (err) {
+    debug(err);
+    next(createError(400));
   }
 };
 
