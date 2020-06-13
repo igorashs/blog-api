@@ -81,8 +81,28 @@ exports.getPostById = async (req, res, next) => {
 };
 
 // PUT an updated post in DB (AUTH)
-exports.updatePostById = (req, res) => {
-  res.json({ message: 'PUT /posts/:postID NOT IMPLEMENTED' });
+exports.updatePostById = async (req, res, next) => {
+  try {
+    const {
+      error: idError,
+      value: params
+    } = await postIDValidationSchema.validate(req.params);
+
+    const { error, value } = await newPostValidationSchema.validate(req.body);
+
+    if (error || idError) {
+      debug(idError || error);
+      next(createError(400));
+    } else {
+      await Post.findByIdAndUpdate(params.postID, value);
+
+      res.status(204);
+      res.send();
+    }
+  } catch (err) {
+    debug(err);
+    next(createError(403));
+  }
 };
 
 // DELETE a specific post (AUTH)
