@@ -1,6 +1,10 @@
 const router = require('express').Router();
+const app = require('express');
 const postController = require('../controllers/postController');
 const userController = require('../controllers/userController');
+
+router.use(app.urlencoded({ extended: true }));
+router.use(app.json());
 
 // GET a list of all posts (AUTH)
 router.get('/', userController.verifyToken, postController.getAllPosts);

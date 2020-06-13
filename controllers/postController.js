@@ -7,6 +7,13 @@ const postIDValidationSchema = joi.object({
   postID: joi.string().required().alphanum().max(24)
 });
 
+const newPostValidationSchema = joi.object({
+  title: joi.string().trim().required().max(60),
+  date: joi.date().default(new Date()),
+  isPublished: joi.boolean().default(false),
+  text: joi.string().trim().required().max(1600)
+});
+
 // GET a list of all posts (AUTH)
 exports.getAllPosts = async (req, res, next) => {
   try {
@@ -30,13 +37,29 @@ exports.getPublishedPosts = async (req, res, next) => {
     res.json(publishedPosts);
   } catch (err) {
     debug(err);
-    next(createError(401));
+    next(createError(403));
   }
 };
 
 // PUT a new post in DB (AUTH)
-exports.postNewPost = (req, res) => {
-  res.json({ message: 'POST /posts/new NOT IMPLEMENTED' });
+exports.postNewPost = async (req, res, next) => {
+  try {
+    const { error, value } = await newPostValidationSchema.validate(req.body);
+
+    if (error) {
+      debug(error);
+      next(createError(400));
+    } else {
+      const post = new Post(value);
+
+      await post.save();
+      res.status(201);
+      res.send();
+    }
+  } catch (err) {
+    debug(err);
+    next(createError(403));
+  }
 };
 
 // GET a specific post (AUTH?)
