@@ -3,6 +3,10 @@ const createError = require('http-errors');
 const Post = require('../models/post');
 const joi = require('@hapi/joi');
 
+const getPostByIdSchema = joi.object({
+  postID: joi.string().required().alphanum().max(24)
+});
+
 // GET a list of all posts (AUTH)
 exports.getAllPosts = async (req, res, next) => {
   try {
@@ -20,7 +24,7 @@ exports.getPublishedPosts = async (req, res, next) => {
   try {
     const publishedPosts = await Post.find(
       { isPublished: true },
-      'title date text -_id'
+      'title date text'
     );
 
     res.json(publishedPosts);
@@ -36,8 +40,21 @@ exports.postNewPost = (req, res) => {
 };
 
 // GET a specific post (AUTH?)
-exports.getPostById = (req, res) => {
-  res.json({ message: 'GET /posts/:postID NOT IMPLEMENTED' });
+exports.getPostById = async (req, res, next) => {
+  try {
+    const { error, value } = await getPostByIdSchema.validate(req.params);
+
+    if (error) {
+      debug(error);
+      next(createError(400));
+    } else {
+      const post = await Post.findById(value.postID, 'title date text');
+      res.json(post);
+    }
+  } catch (err) {
+    debug(err);
+    next(createError(403));
+  }
 };
 
 // PUT an updated post in DB (AUTH)
