@@ -4,8 +4,15 @@ const Post = require('../models/post');
 const joi = require('@hapi/joi');
 
 // GET a list of all posts (AUTH)
-exports.getAllPosts = (req, res) => {
-  res.json({ message: 'GET /posts NOT IMPLEMENTED' });
+exports.getAllPosts = async (req, res, next) => {
+  try {
+    const posts = await Post.find({}, 'title date text');
+
+    res.json(posts);
+  } catch (err) {
+    debug(err);
+    next(createError(401));
+  }
 };
 
 // GET a list of published posts
