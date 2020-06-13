@@ -3,7 +3,7 @@ const createError = require('http-errors');
 const Post = require('../models/post');
 const joi = require('@hapi/joi');
 
-const getPostByIdSchema = joi.object({
+const postIDValidationSchema = joi.object({
   postID: joi.string().required().alphanum().max(24)
 });
 
@@ -42,7 +42,7 @@ exports.postNewPost = (req, res) => {
 // GET a specific post (AUTH?)
 exports.getPostById = async (req, res, next) => {
   try {
-    const { error, value } = await getPostByIdSchema.validate(req.params);
+    const { error, value } = await postIDValidationSchema.validate(req.params);
 
     if (error) {
       debug(error);
@@ -63,6 +63,21 @@ exports.updatePostById = (req, res) => {
 };
 
 // DELETE a specific post (AUTH)
-exports.deletePostById = (req, res) => {
-  res.json({ message: 'DELETE /posts/:postID NOT IMPLEMENTED' });
+exports.deletePostById = async (req, res, next) => {
+  try {
+    const { error, value } = await postIDValidationSchema.validate(req.params);
+
+    if (error) {
+      debug(error);
+      next(createError(400));
+    } else {
+      await Post.findByIdAndDelete(value.postID);
+
+      res.status(204);
+      res.send();
+    }
+  } catch (err) {
+    debug(err);
+    next(createError(403));
+  }
 };
