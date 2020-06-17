@@ -69,8 +69,30 @@ exports.postNewCommentByPostId = async (req, res, next) => {
 };
 
 // DELETE a comment from a specific post (AUTH)
-exports.deleteCommentByCommentId = (req, res) => {
-  res.json({
-    message: 'DELETE /posts/:postID/comments/:commentID NOT IMPLEMENTED'
-  });
+exports.deleteCommentByCommentId = async (req, res, next) => {
+  try {
+    const { error: postIDError } = await postIDValidationSchema.validate({
+      postID: req.params.postID
+    });
+
+    const {
+      error: commentIDError,
+      value: commentIDValue
+    } = await commentIDValidationSchema.validate({
+      commentID: req.params.commentID
+    });
+
+    if (postIDError || commentIDError) {
+      debug(postIDError || commentIDError);
+      next(createError(401));
+    } else {
+      await Comment.findByIdAndDelete(commentIDValue.commentID);
+
+      res.status(204);
+      res.send();
+    }
+  } catch (err) {
+    debug(err);
+    next(createError(403));
+  }
 };
