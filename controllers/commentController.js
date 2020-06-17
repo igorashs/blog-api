@@ -19,8 +19,22 @@ const newCommentValidationSchema = joi.object({
 });
 
 // GET a list of comments for a specific post
-exports.getCommentsByPostId = (req, res) => {
-  res.json({ message: 'GET /posts/:postID/comments NOT IMPLEMENTED' });
+exports.getCommentsByPostId = async (req, res, next) => {
+  try {
+    const { error, value } = await postIDValidationSchema.validate(req.params);
+
+    if (error) {
+      debug(error);
+      next(createError(400));
+    } else {
+      const comments = await Comment.find({ post: value.postID });
+
+      res.json(comments);
+    }
+  } catch (err) {
+    debug(err);
+    next(createError(403));
+  }
 };
 
 // POST a new comment for a specific post in DB
