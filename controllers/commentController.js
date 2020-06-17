@@ -8,11 +8,14 @@ const commentIDValidationSchema = joi.object({
   commentID: joi.string().required().alphanum().max(24)
 });
 
+const postIDValidationSchema = joi.object({
+  postID: joi.string().required().alphanum().max(24)
+});
+
 const newCommentValidationSchema = joi.object({
   username: joi.string().required().trim().min(1).max(15),
   date: joi.date().default(new Date()),
-  text: joi.string().required().trim().max(300),
-  post: joi.string().required().alphanum().max(24)
+  text: joi.string().required().trim().max(300)
 });
 
 // GET a list of comments for a specific post
@@ -23,17 +26,23 @@ exports.getCommentsByPostId = (req, res) => {
 // POST a new comment for a specific post in DB
 exports.postNewCommentByPostId = async (req, res, next) => {
   try {
+    const {
+      error: idError,
+      value: idValue
+    } = await postIDValidationSchema.validate(req.params);
+
     const { error, value } = await newCommentValidationSchema.validate(
       req.body
     );
 
-    const count = await Post.countDocuments({ _id: value.post });
-
-    if (error && count <= 0) {
+    if (
+      (idError || error) &&
+      (await Post.countDocuments({ _id: idValue.postID })) <= 0
+    ) {
       debug(error);
       next(createError(400));
     } else {
-      const comment = new Comment(value);
+      const comment = new Comment({ ...value, post: idValue.postID });
       await comment.save();
 
       res.status(201);

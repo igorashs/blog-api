@@ -1,4 +1,4 @@
-const router = require('express').Router();
+const router = require('express').Router({ mergeParams: true });
 const commentController = require('../controllers/commentController');
 
 // GET a list of comments for a specific post
