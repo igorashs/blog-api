@@ -4,9 +4,12 @@ const createError = require('http-errors');
 const helmet = require('helmet');
 const env = require('./.env.config');
 const express = require('express');
+const cors = require('cors');
 const initDB = require('./lib/db').initDB;
 
 const app = express();
+
+app.use(cors({ origin: 'http://localhost:3000' }));
 
 // init DB
 initDB();
