@@ -8,16 +8,16 @@ const postIDValidationSchema = joi.object({
 });
 
 const newPostValidationSchema = joi.object({
-  title: joi.string().trim().required().max(60),
+  title: joi.string().trim().required().max(80),
   date: joi.date().default(new Date()),
   isPublished: joi.boolean().default(false),
-  text: joi.string().trim().required().max(1600)
+  text: joi.string().trim().required().max(7300)
 });
 
 // GET a list of all posts (AUTH)
 exports.getAllPosts = async (req, res, next) => {
   try {
-    const posts = await Post.find({}, 'title date text');
+    const posts = await Post.find({}, 'title date text isPublished');
 
     res.json(posts);
   } catch (err) {
