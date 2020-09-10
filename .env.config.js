@@ -9,5 +9,5 @@ if (process.env.NODE_ENV !== 'production') {
 
   module.exports = env;
 } else {
-  module.exports = env;
+  module.exports = process.env;
 }
