@@ -11,7 +11,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: ['https://igorashs.github.io/']
+    origin: ['https://igorashs.github.io']
   })
 );
 
