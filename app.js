@@ -11,10 +11,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: [
-      'https://igorashs.github.io/react-blog-view/',
-      'https://igorashs.github.io/react-blog-editor/'
-    ]
+    origin: ['https://igorashs.github.io/']
   })
 );
 
