@@ -9,7 +9,14 @@ const initDB = require('./lib/db').initDB;
 
 const app = express();
 
-app.use(cors({ origin: ['http://localhost:3000', 'http://localhost:3001'] }));
+app.use(
+  cors({
+    origin: [
+      'https://igorashs.github.io/react-blog-view/',
+      'https://igorashs.github.io/react-blog-editor/'
+    ]
+  })
+);
 
 // init DB
 initDB();
